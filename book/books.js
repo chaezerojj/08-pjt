@@ -1,3 +1,15 @@
+// 책 목록을 저장하는 함수
+function getBooks() {
+  return JSON.parse(localStorage.getItem('books')) || bookRawData;
+}
+
+// 책 데이터를 추가하는 함수
+function addBook(newBook) {
+  const books = getBooks();
+  books.push(newBook);
+  localStorage.setItem('books', JSON.stringify(books));
+}
+
 const bookRawData = [
   {
     title: '소년이 온다',

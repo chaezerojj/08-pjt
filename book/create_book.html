@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- 상단 네비게이션 -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
+    <div class="container-fluid">
+      <a class="navbar-brand">Books</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar-nav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <button id="home-nav" class="nav-link" onclick="location.href='index.html'">Home</button>
+          </li>
+          <li class="nav-item">
+            <button id="create-nav" class="nav-link">Create</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Create 페이지 -->
+  <div id="create-container" class="container mb-3">
+    <div class="row">
+      <div class="col-8">
+        <h1 class="w-75 mx-auto">Create</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-8">
+        <form id="create-form" class="w-75 mx-auto">
+          <div class="mb-3">
+            <label for="title-input" class="form-label">제목</label>
+            <input type="text" id="title-input" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="author-input" class="form-label">작가</label>
+            <input type="text" id="author-input" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="img-input" class="form-label">이미지 URL</label>
+            <input type="text" id="img-input" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="desc-input" class="form-label">소개</label>
+            <textarea id="desc-input" class="form-control" cols="30" rows="6"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="category-input" class="form-label">분류</label>
+            <input type="text" id="category-input" class="form-control">
+          </div>
+          <div class="mb-3">
+            <input type="submit" value="추가" class="btn btn-primary">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-4">
+        <ul id="create-book-errors"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 외부 자바스크립트 파일 연결 -->
+  <script src="books.js"></script>
+
+  <script>
+    // 폼 제출 시 처리
+    const form = document.querySelector('#create-form');
+    const titleInput = document.querySelector('#title-input');
+    const authorInput = document.querySelector('#author-input');
+    const imgInput = document.querySelector('#img-input');
+    const descInput = document.querySelector('#desc-input');
+    const categoryInput = document.querySelector('#category-input');
+    const errorsList = document.querySelector('#create-book-errors');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();  // 기본 제출 동작을 막음
+
+      // 폼 값 가져오기
+      const title = titleInput.value.trim();
+      const author = authorInput.value.trim();
+      const imgUrl = imgInput.value.trim();
+      const description = descInput.value.trim();
+      const category = categoryInput.value.trim();
+
+      // 유효성 검사
+      const errors = [];
+      if (!title) errors.push('제목을 입력하세요.');
+      if (!author) errors.push('작가를 입력하세요.');
+      if (!imgUrl) errors.push('이미지 URL을 입력하세요.');
+      if (!description) errors.push('소개를 입력하세요.');
+      if (!category) errors.push('분류를 입력하세요.');
+
+      // 에러가 있을 경우
+      if (errors.length > 0) {
+        errorsList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+      } else {
+        // 새로운 책 데이터
+        const newBook = {
+          title: title,
+          author: author,
+          cover: imgUrl,
+          description: description,
+          categoryId: category // 카테고리 아이디는 추후 실제 값을 넣어야 함
+        };
+
+        // 책 데이터 추가
+        addBook(newBook);
+
+        // 폼 리셋
+        form.reset();
+        errorsList.innerHTML = '<li>책이 성공적으로 추가되었습니다!</li>';
+      }
+    });
+  </script>
+</body>
+</html>
