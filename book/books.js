@@ -1,16 +1,30 @@
 // 책 목록을 저장하는 함수
 function getBooks() {
-  return JSON.parse(localStorage.getItem('books')) || bookRawData;
+  return JSON.parse(localStorage.getItem('books')) || [];
 }
 
 // 책 데이터를 추가하는 함수
 function addBook(newBook) {
   const books = getBooks();
-  books.push(newBook);
+  books.unshift(newBook); // 새 책을 제일 앞에 추가
   localStorage.setItem('books', JSON.stringify(books));
 }
 
-const bookRawData = [
+// 책 목록을 화면에 표시하는 함수
+function displayBooks() {
+  const books = getBooks();
+  const bookList = document.querySelector('#book-list'); // 책 목록을 표시할 요소
+  bookList.innerHTML = books.map(book => `
+    <li>
+      <h5>${book.title}</h5>
+      <p>작가: ${book.author}</p>
+      <p>소개: ${book.description}</p>
+      <p>분류: ${book.category}</p>
+    </li>
+  `).join('');
+}
+
+export const bookRawData = [
   {
     title: '소년이 온다',
     description: '이탈리아 말라파르테 문학상 수상작. 한강의 여섯번째 장편소설. \'상처의 구조에 대한 투시와 천착의 서사\'를 통해 한강만이 풀어낼 수 있는 방식으로 1980년 5월을 새롭게 조명한다. 한강은 무고한 영혼들의 말을 대신 전하는 듯한 진심 어린 문장들로 어느덧 그 시절을 잊고 무심하게 5.18 이후를 살고 있는 우리에게 묵직한 질문을 던지고, 여전히 5.18의 트라우마를 안고 힘겹게 살아가는 사람들을 위무한다. 광주민주화운동 당시 계엄군에 맞서 싸우던 중학생 동호를 비롯한 주변 인물들과 그후 남겨진 사람들의 고통받는 내면을 생생하게 그려내고, 당시의 처절한 장면들을 핍진하게 묘사하며 지금 우리가 붙들어야 할 역사적 기억이 무엇인지를 절실하게 환기하고 있다.  5.18 당시 중학교 3학년이던 소년 동호는 친구 정대의 죽음을 목격한 것을 계기로 도청 상무관에서 시신들을 관리하는 일을 돕게 된다. 매일같이 합동분향소가 있는 상무관으로 들어오는 시신들을 수습하면서 열다섯 어린 소년은 \'어린 새\' 한 마리가 빠져나간 것 같은 주검들의 말 없는 혼을 위로하기 위해 초를 밝히고, \'시취를 뿜어내는 것으로 또다른 시위를 하는 것 같은\' 시신들 사이에서 친구 정대의 처참한 죽음을 떠올리며 괴로워한다.  정대는 동호와 함께 시위대의 행진 도중 계엄군이 쏜 총에 맞아 쓰러져 죽게 되고, 중학교를 마치기 전에 공장에 들어와 자신의 꿈을 미루고 동생을 뒷바라지하던 정대의 누나 정미 역시 그 봄에 행방불명되면서 남매는 비극을 맞는다. 소설은 동호와 함께 상무관에서 일하던 형과 누나들이 겪은 5.18 전후의 삶의 모습을 통해 대한민국 근현대사의 비극적인 단면들을 드러내 보이고 있다.',

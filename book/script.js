@@ -2,6 +2,10 @@
  * 제공 코드
  */
 // 기본 작가, 분류, 도서 데이터 (JavaScript Array)
+import { authorRawData } from './authors.js';  // authors.js에서 authorRawData를 가져옵니다.
+import { categoryRawData } from './categories.js'; // categories.js에서 categoryRawData를 가져옵니다.
+import { bookRawData } from './books.js'; // categories.js에서 categoryRawData를 가져옵니다.
+    
 const categories = categoryRawData
 const authors = authorRawData
 const books = bookRawData

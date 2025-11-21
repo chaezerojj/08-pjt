@@ -17,10 +17,10 @@
       <div class="collapse navbar-collapse" id="navbar-nav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <button id="home-nav" class="nav-link" >Home</button>
+            <button id="home-nav" class="nav-link" onclick="location.href='index.html'">Home</button>
           </li>
           <li class="nav-item">
-            <button id="create-nav" class="nav-link" >Create</button>
+            <button id="create-nav" class="nav-link" onclick="location.href='create_book.html'">Create</button>
           </li>
         </ul>
       </div>
@@ -122,9 +122,60 @@
   
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  <script src="categories.js"></script>
-  <script src="authors.js"></script>
-  <script src="books.js"></script>
-  <script src="script.js"></script>
+  <script src="categories.js" type="module"></script>
+  <script src="authors.js" type="module"></script>
+  <script src="books.js" type="module"></script>
+  <script src="script.js" type="module"></script>
+  <!-- index.html (홈 페이지) -->
+
+<script type="module">
+  document.addEventListener('DOMContentLoaded', function() {
+    const books = JSON.parse(localStorage.getItem('books')) || [];
+    const newBookAdded = localStorage.getItem('newBookAdded');
+
+    const booksContainer = document.getElementById('book-list-row');
+    booksContainer.innerHTML = '';  // 기존 목록 초기화
+
+    // 새로운 책이 추가되었으면, 해당 책을 첫 번째로 표시
+    if (newBookAdded === 'true' && books.length > 0) {
+      const newBook = books[0];  // 첫 번째 책 가져오기
+      const newBookElement = document.createElement('div');
+      newBookElement.classList.add('col-3');
+      newBookElement.innerHTML = `
+        <div class="card">
+          <img src="${newBook.cover}" class="card-img-top" alt="${newBook.title}">
+          <div class="card-body">
+            <h5 class="card-title">${newBook.title}</h5>
+            <p class="card-text">${newBook.author}</p>
+          </div>
+        </div>
+      `;
+      booksContainer.appendChild(newBookElement);
+
+      // 'newBookAdded' 플래그를 false로 설정
+      localStorage.setItem('newBookAdded', 'false');
+    }
+
+    // 책 목록 출력
+    books.forEach(book => {
+      const bookElement = document.createElement('div');
+      bookElement.classList.add('col-3');
+      bookElement.innerHTML = `
+        <div class="card">
+          <img src="${book.cover}" class="card-img-top" alt="${book.title}">
+          <div class="card-body">
+            <h5 class="card-title">${book.title}</h5>
+            <p class="card-text">${book.author}</p>
+          </div>
+        </div>
+      `;
+      booksContainer.appendChild(bookElement);
+    });
+  });
+</script>
+
+<!-- 책 목록을 출력할 위치 -->
+<ul id="books-list"></ul>
+
 </body>
 </html>

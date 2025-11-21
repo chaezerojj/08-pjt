@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
   <!-- 상단 네비게이션 -->
   <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
     <div class="container-fluid">
-      <a class="navbar-brand">Books</a>
+      <a class="navbar-brand" >Books</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -20,7 +20,7 @@
             <button id="home-nav" class="nav-link" onclick="location.href='index.html'">Home</button>
           </li>
           <li class="nav-item">
-            <button id="create-nav" class="nav-link">Create</button>
+            <button id="create-nav" class="nav-link" onclick="location.href='create_book.html'">Create</button>
           </li>
         </ul>
       </div>
@@ -43,7 +43,9 @@
           </div>
           <div class="mb-3">
             <label for="author-input" class="form-label">작가</label>
-            <input type="text" id="author-input" class="form-control">
+            <select id="author-input" class="form-control">
+              <!-- 작가 목록은 JS에서 동적으로 채워집니다 -->
+            </select>
           </div>
           <div class="mb-3">
             <label for="img-input" class="form-label">이미지 URL</label>
@@ -55,7 +57,9 @@
           </div>
           <div class="mb-3">
             <label for="category-input" class="form-label">분류</label>
-            <input type="text" id="category-input" class="form-control">
+            <select id="category-input" class="form-control">
+              <!-- 카테고리 목록은 JS에서 동적으로 채워집니다 -->
+            </select>
           </div>
           <div class="mb-3">
             <input type="submit" value="추가" class="btn btn-primary">
@@ -70,57 +74,100 @@
   </div>
 
   <!-- 외부 자바스크립트 파일 연결 -->
-  <script src="books.js"></script>
+  <script type="module">
+  import { authorRawData } from './authors.js';  // authors.js에서 authorRawData를 가져옵니다.
+  import { categoryRawData } from './categories.js'; // categories.js에서 categoryRawData를 가져옵니다.
 
-  <script>
-    // 폼 제출 시 처리
-    const form = document.querySelector('#create-form');
-    const titleInput = document.querySelector('#title-input');
+  // 로컬스토리지에서 작가와 카테고리 데이터를 가져오는 함수
+  function getAuthors() {
+    return authorRawData;  // authors.js에서 데이터를 가져옵니다.
+  }
+
+  function getCategories() {
+    return categoryRawData;  // categories.js에서 데이터를 가져옵니다.
+  }
+
+  // 작가 및 카테고리 데이터를 select 옵션으로 추가하는 함수
+  function populateAuthors() {
+    const authors = getAuthors();
     const authorInput = document.querySelector('#author-input');
-    const imgInput = document.querySelector('#img-input');
-    const descInput = document.querySelector('#desc-input');
+    authorInput.innerHTML = authors.map(author => `<option value="${author.id}">${author.name}</option>`).join('');
+  }
+
+  function populateCategories() {
+    const categories = getCategories();
     const categoryInput = document.querySelector('#category-input');
-    const errorsList = document.querySelector('#create-book-errors');
+    categoryInput.innerHTML = categories.map(category => `<option value="${category.id}">${category.name}</option>`).join('');
+  }
 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();  // 기본 제출 동작을 막음
+  // 초기 로딩 시 작가 및 카테고리 데이터가 없으면 기본 데이터 추가
+  document.addEventListener('DOMContentLoaded', () => {
+    // 작가와 카테고리 목록을 드롭다운에 채우기
+    populateAuthors();
+    populateCategories();
+  });
 
-      // 폼 값 가져오기
-      const title = titleInput.value.trim();
-      const author = authorInput.value.trim();
-      const imgUrl = imgInput.value.trim();
-      const description = descInput.value.trim();
-      const category = categoryInput.value.trim();
+  // 폼 제출 시 처리
+  const form = document.querySelector('#create-form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();  // 기본 제출 동작을 막음
 
-      // 유효성 검사
-      const errors = [];
-      if (!title) errors.push('제목을 입력하세요.');
-      if (!author) errors.push('작가를 입력하세요.');
-      if (!imgUrl) errors.push('이미지 URL을 입력하세요.');
-      if (!description) errors.push('소개를 입력하세요.');
-      if (!category) errors.push('분류를 입력하세요.');
+    const title = document.querySelector('#title-input').value.trim();
+    const authorId = parseInt(document.querySelector('#author-input').value);
+    const imgUrl = document.querySelector('#img-input').value.trim();
+    const description = document.querySelector('#desc-input').value.trim();
+    const categoryId = parseInt(document.querySelector('#category-input').value);
 
-      // 에러가 있을 경우
-      if (errors.length > 0) {
-        errorsList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
-      } else {
-        // 새로운 책 데이터
-        const newBook = {
-          title: title,
-          author: author,
-          cover: imgUrl,
-          description: description,
-          categoryId: category // 카테고리 아이디는 추후 실제 값을 넣어야 함
-        };
+    const errors = [];
 
-        // 책 데이터 추가
-        addBook(newBook);
+    // 유효성 검사
+    if (!title) errors.push('제목을 입력하세요.');
+    if (!authorId) errors.push('작가를 선택하세요.');
+    if (!description) errors.push('소개를 입력하세요.');
+    if (!categoryId) errors.push('분류를 선택하세요.');
 
-        // 폼 리셋
-        form.reset();
-        errorsList.innerHTML = '<li>책이 성공적으로 추가되었습니다!</li>';
-      }
-    });
-  </script>
+    // 이미지 URL 검증
+    if (imgUrl && !imgUrl.startsWith('http')) {
+      document.querySelector('#img-input').value = '';
+      errors.push('이미지 URL은 http로 시작해야 합니다.');
+    }
+
+    if (errors.length > 0) {
+      document.querySelector('#create-book-errors').innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+    } else {
+      // 새로운 책 데이터 추가
+      const newBook = {
+        title: title,
+        author: getAuthors().find(author => author.id === authorId).name,
+        cover: imgUrl,
+        description: description,
+        category: getCategories().find(category => category.id === categoryId).name,
+      };
+
+      // 책 데이터 저장 (localStorage에 추가)
+      addBook(newBook);
+
+      form.reset();
+      document.querySelector('#create-book-errors').innerHTML = '<li>책이 성공적으로 추가되었습니다!</li>';
+
+      // 'newBookAdded' 플래그를 true로 설정
+      localStorage.setItem('newBookAdded', 'true');
+
+      // 잠시 후 도서 목록 페이지로 이동
+      setTimeout(() => {
+        location.href = 'index.html'; // 도서 목록 페이지로 이동
+      }, 2000);
+    }
+  });
+
+  // 책 추가 함수 (localStorage에 저장)
+  function addBook(newBook) {
+    const books = JSON.parse(localStorage.getItem('books')) || [];
+    books.unshift(newBook);  // 새로운 책을 맨 앞에 추가
+    localStorage.setItem('books', JSON.stringify(books));
+  }
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
