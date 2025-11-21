@@ -1,79 +1,22 @@
-/**
- * 제공 코드
- */
-// 기본 작가, 분류, 도서 데이터 (JavaScript Array)
-import { authorRawData } from './authors.js';  // authors.js에서 authorRawData를 가져옵니다.
-import { categoryRawData } from './categories.js'; // categories.js에서 categoryRawData를 가져옵니다.
-import { bookRawData } from './books.js'; // categories.js에서 categoryRawData를 가져옵니다.
-    
+// 제공 데이터 import
+import { authorRawData } from './authors.js'
+import { categoryRawData } from './categories.js'
+import { bookRawData } from './books.js'
+
+// 데이터 초기화
 const categories = categoryRawData
 const authors = authorRawData
 const books = bookRawData
-// 데이터 확인
-console.log(categories.length)
-console.log(categories[0])
-console.log(authors.length)
-console.log(authors[0])
-console.log(books.length)
-console.log(books[0])
 
-/**
- * 대부분의 작업은 script.js에서 진행해도 무방하나 원한다면 js 파일 추가 가능
- * HTML 요소 추가를 위한 `.innerHTML` 사용 금지, 요소의 내용을 비우는 용도로는 사용 가능 (`.innerHTML = ```)
- */
 
-// 예시 books 데이터
-// const books = [
-//   {
-//     title: "자바스크립트 입문",
-//     description: "자바스크립트의 기초를 배울 수 있는 책입니다.",
-//     coverImage: "js-book.jpg"
-//   },
-//   {
-//     title: "HTML과 CSS",
-//     description: "웹 디자인의 기본을 다룹니다.",
-//     coverImage: ""
-//   },
-//   {
-//     title: "React 완벽 가이드",
-//     description: "React를 활용한 프론트엔드 개발서.",
-//     coverImage: "react-guide.jpg"
-//   }
-// ];
+// 전역 상태 (즐겨찾기 배열)
+let favoriteBooks = []
 
-// // 도서 목록을 출력하는 함수
-// function displayBooks() {
-//   const bookListRow = document.getElementById("book-list-row");
-//   bookListRow.innerHTML = ""; // 기존 내용 초기화
 
-//   books.forEach(book => {
-//     const cover = book.coverImage && book.coverImage.trim() !== ""
-//       ? book.coverImage
-//       : "stack-of-books.png";
-
-//     const col = document.createElement("div");
-//     col.className = "col-12 col-sm-6 col-md-4 col-lg-3 mb-4";
-
-//     col.innerHTML = `
-//       <div class="card h-100">
-//         <img src="${cover}" class="card-img-top" alt="${book.title}">
-//         <div class="card-body">
-//           <h5 class="card-title">${book.title}</h5>
-//           <p class="card-text">${book.description}</p>
-//         </div>
-//       </div>
-//     `;
-
-//     bookListRow.appendChild(col);
-//   });
-// }
-
-// // DOM이 준비되면 실행
-// document.addEventListener("DOMContentLoaded", displayBooks);\\
-
+// 렌더링 함수 (기본 도서 목록)
 function renderBooks(bookList) {
   const listRow = document.querySelector('#book-list-row')
-  listRow.innerHTML = ''   // 요소 비우기만 innerHTML 사용 가능
+  listRow.innerHTML = ''
 
   bookList.forEach(book => {
     const col = document.createElement('div')
@@ -85,9 +28,7 @@ function renderBooks(bookList) {
     // 이미지
     const img = document.createElement('img')
     img.className = 'card-img-top'
-    img.src = book.cover && book.cover.length > 0 
-      ? book.cover 
-      : 'stack-of-books.png'   // 제공 이미지
+    img.src = book.cover && book.cover.length > 0 ? book.cover : 'stack-of-books.png'
 
     // 카드 바디
     const body = document.createElement('div')
@@ -101,8 +42,23 @@ function renderBooks(bookList) {
     desc.className = 'card-text'
     desc.textContent = book.description.slice(0, 80) + '...'
 
+    // 즐겨찾기 버튼
+    const favBtn = document.createElement('button')
+    favBtn.className = 'btn btn-warning btn-sm'
+
+    if (favoriteBooks.includes(book)) {
+      favBtn.textContent = '취소'
+    } else {
+      favBtn.textContent = '즐겨찾기'
+    }
+
+    favBtn.addEventListener('click', () => toggleFavorite(book))
+
+    // 구성
     body.appendChild(title)
     body.appendChild(desc)
+    body.appendChild(favBtn)
+
     card.appendChild(img)
     card.appendChild(body)
     col.appendChild(card)
@@ -110,6 +66,75 @@ function renderBooks(bookList) {
   })
 }
 
+
+// 즐겨찾기 렌더링
+function renderFavorites() {
+  const favContainer = document.querySelector('#favorites-list-row')
+  favContainer.innerHTML = ''
+
+  if (favoriteBooks.length === 0) {
+    const msg = document.createElement('p')
+    msg.className = 'text-center'
+    msg.textContent = '즐겨찾기에 추가한 도서가 없습니다.'
+    favContainer.appendChild(msg)
+    return
+  }
+
+  favoriteBooks.forEach(book => {
+    const col = document.createElement('div')
+    col.className = 'col-12 col-sm-6 col-md-4 col-lg-3'
+
+    const card = document.createElement('div')
+    card.className = 'card h-100'
+
+    const img = document.createElement('img')
+    img.className = 'card-img-top'
+    img.src = book.cover && book.cover.length > 0 ? book.cover : 'stack-of-books.png'
+
+    const body = document.createElement('div')
+    body.className = 'card-body'
+
+    const title = document.createElement('h5')
+    title.className = 'card-title'
+    title.textContent = book.title
+
+    const removeBtn = document.createElement('button')
+    removeBtn.className = 'btn btn-danger btn-sm'
+    removeBtn.textContent = '취소'
+    removeBtn.addEventListener('click', () => toggleFavorite(book))
+
+    body.appendChild(title)
+    body.appendChild(removeBtn)
+
+    card.appendChild(img)
+    card.appendChild(body)
+    col.appendChild(card)
+    favContainer.appendChild(col)
+  })
+}
+
+
+// 즐겨찾기 토글
+function toggleFavorite(book) {
+  const idx = favoriteBooks.indexOf(book)
+
+  if (idx === -1) {
+    favoriteBooks.push(book)
+  } else {
+    favoriteBooks.splice(idx, 1)
+  }
+
+  // 즐겨찾기 탭일 때는 즐겨찾기 목록 갱신
+  if (!document.querySelector('#favorites-container').classList.contains('d-none')) {
+    renderFavorites()
+  }
+
+  // 홈 탭 목록 갱신
+  renderBooks(books)
+}
+
+
+// 검색 기능
 function searchBooks() {
   const keyword = document.querySelector('#search-input').value.trim()
   const type = document.querySelector('#search-type').value
@@ -134,6 +159,72 @@ function searchBooks() {
   renderBooks(result)
 }
 
+
+// 탭 전환 기능
+const homeNav = document.querySelector('#home-nav')
+const createNav = document.querySelector('#create-nav')
+const favoritesNav = document.querySelector('#favorites-nav')
+
+const homeContainer = document.querySelector('#home-container')
+const createContainer = document.querySelector('#create-container')
+const favoritesContainer = document.querySelector('#favorites-container')
+
+homeNav.addEventListener('click', () => {
+  homeContainer.classList.remove('d-none')
+  createContainer.classList.add('d-none')
+  favoritesContainer.classList.add('d-none')
+  renderBooks(books)
+})
+
+createNav.addEventListener('click', () => {
+  homeContainer.classList.add('d-none')
+  createContainer.classList.remove('d-none')
+  favoritesContainer.classList.add('d-none')
+})
+
+favoritesNav.addEventListener('click', () => {
+  homeContainer.classList.add('d-none')
+  createContainer.classList.add('d-none')
+  favoritesContainer.classList.remove('d-none')
+  renderFavorites()
+})
+
+
+// 도서 추가 기능 (F04)
+document.querySelector('#create-form').addEventListener('submit', (e) => {
+  e.preventDefault()
+
+  const title = document.querySelector('#title-input').value.trim()
+  const authorName = document.querySelector('#author-input').value.trim()
+  const img = document.querySelector('#img-input').value.trim()
+  const desc = document.querySelector('#desc-input').value.trim()
+  const cateName = document.querySelector('#category-input').value.trim()
+
+  if (!title || !authorName || !desc || !cateName) {
+    alert("모든 값을 입력하세요.")
+    return
+  }
+
+  const authorObj = authors.find(a => a.name === authorName)
+  const cateObj = categories.find(c => c.name === cateName)
+
+  const newBook = {
+    title,
+    description: desc,
+    cover: img,
+    authorId: authorObj?.id || 1,
+    categoryId: cateObj?.id || 1,
+  }
+
+  books.unshift(newBook)
+
+  homeNav.click()
+  renderBooks(books)
+})
+
+
+// 초기 목록 렌더링
 renderBooks(books)
-const btn = document.querySelector('#search-btn')
-btn.addEventListener('click', searchBooks)
+
+// 검색 버튼 이벤트
+document.querySelector('#search-btn').addEventListener('click', searchBooks)
