@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
+
 <body>
   <!-- 상단 네비게이션 -->
   <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
     <div class="container-fluid">
-      <a class="navbar-brand" >Books</a>
+      <a class="navbar-brand">Books</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbar-nav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <button id="home-nav" class="nav-link" >Home</button>
+            <button id="home-nav" class="nav-link" onclick="location.href='index.html'">Home</button>
           </li>
           <li class="nav-item">
-            <button id="create-nav" class="nav-link" >Create</button>
+            <button id="create-nav" class="nav-link" onclick="location.href='create_book.html'">Create</button>
           </li>
+          <li class="nav-item">
+            <button id="favorites-nav" class="nav-link">Favorites</button>
+          </li>
+
         </ul>
       </div>
     </div>
@@ -37,6 +44,15 @@
     <!-- 검색창 영역 -->
     <h2>Search</h2>
     <!-- 여기에 검색창을 구현하세요 -->
+    <div class="input-group mb-3">
+      <input id="search-input" class="form-control" placeholder="검색어를 입력하세요">
+      <button id="search-btn" class="btn btn-primary">검색</button>
+    </div>
+    <select id="search-type" class="form-select w-25 mb-3">
+      <option value="title">제목</option>
+      <option value="author">작가</option>
+      <option value="category">분류</option>
+    </select>
     <hr>
 
     <!-- 도서 목록 -->
@@ -45,10 +61,19 @@
     <nav id="paging-nav" class="d-flex justify-content-center">
       <ul class="pagination"></ul>
     </nav>
-  </div>  
+  </div>
+  <div id="favorites-container" class="container mb-3 d-none">
+    <h2 class="mb-3">Favorites</h2>
+    <div id="favorites-list-row" class="row g-3 mb-2"></div>
+  </div>
+
   <!-- 도서 데이터 입력 탭 -->
   <div id="create-container" class="container mb-3 d-none">
-    <div class="row"><div class="col-8"><h1 class="w-75 mx-auto">Create</h1></div></div>
+    <div class="row">
+      <div class="col-8">
+        <h1 class="w-75 mx-auto">Create</h1>
+      </div>
+    </div>
     <div class="row">
       <div class="col-8">
         <form id="create-form" class="w-75 mx-auto">
@@ -93,12 +118,21 @@
             <div class="row">
               <div class="col">
                 <div class="d-flex justify-content-center align-items-center">
-                  <img src="https://image.aladin.co.kr/product/4086/97/cover500/8936434128_2.jpg" alt="" class="img-fluid object-fit-contain" style="height: 60vh;">
+                  <img src="https://image.aladin.co.kr/product/4086/97/cover500/8936434128_2.jpg" alt=""
+                    class="img-fluid object-fit-contain" style="height: 60vh;">
                 </div>
               </div>
               <div class="col">
                 <p class="overflow-y-auto" style="max-height: 60vh;">
-                  이탈리아 말라파르테 문학상 수상작. 한강의 여섯번째 장편소설. '상처의 구조에 대한 투시와 천착의 서사'를 통해 한강만이 풀어낼 수 있는 방식으로 1980년 5월을 새롭게 조명한다. 한강은 무고한 영혼들의 말을 대신 전하는 듯한 진심 어린 문장들로 어느덧 그 시절을 잊고 무심하게 5.18 이후를 살고 있는 우리에게 묵직한 질문을 던지고, 여전히 5.18의 트라우마를 안고 힘겹게 살아가는 사람들을 위무한다. 광주민주화운동 당시 계엄군에 맞서 싸우던 중학생 동호를 비롯한 주변 인물들과 그후 남겨진 사람들의 고통받는 내면을 생생하게 그려내고, 당시의 처절한 장면들을 핍진하게 묘사하며 지금 우리가 붙들어야 할 역사적 기억이 무엇인지를 절실하게 환기하고 있다.  5.18 당시 중학교 3학년이던 소년 동호는 친구 정대의 죽음을 목격한 것을 계기로 도청 상무관에서 시신들을 관리하는 일을 돕게 된다. 매일같이 합동분향소가 있는 상무관으로 들어오는 시신들을 수습하면서 열다섯 어린 소년은 '어린 새' 한 마리가 빠져나간 것 같은 주검들의 말 없는 혼을 위로하기 위해 초를 밝히고, '시취를 뿜어내는 것으로 또다른 시위를 하는 것 같은' 시신들 사이에서 친구 정대의 처참한 죽음을 떠올리며 괴로워한다.  정대는 동호와 함께 시위대의 행진 도중 계엄군이 쏜 총에 맞아 쓰러져 죽게 되고, 중학교를 마치기 전에 공장에 들어와 자신의 꿈을 미루고 동생을 뒷바라지하던 정대의 누나 정미 역시 그 봄에 행방불명되면서 남매는 비극을 맞는다. 소설은 동호와 함께 상무관에서 일하던 형과 누나들이 겪은 5.18 전후의 삶의 모습을 통해 대한민국 근현대사의 비극적인 단면들을 드러내 보이고 있다.
+                  이탈리아 말라파르테 문학상 수상작. 한강의 여섯번째 장편소설. '상처의 구조에 대한 투시와 천착의 서사'를 통해 한강만이 풀어낼 수 있는 방식으로 1980년 5월을 새롭게 조명한다.
+                  한강은 무고한 영혼들의 말을 대신 전하는 듯한 진심 어린 문장들로 어느덧 그 시절을 잊고 무심하게 5.18 이후를 살고 있는 우리에게 묵직한 질문을 던지고, 여전히 5.18의
+                  트라우마를 안고 힘겹게 살아가는 사람들을 위무한다. 광주민주화운동 당시 계엄군에 맞서 싸우던 중학생 동호를 비롯한 주변 인물들과 그후 남겨진 사람들의 고통받는 내면을 생생하게
+                  그려내고, 당시의 처절한 장면들을 핍진하게 묘사하며 지금 우리가 붙들어야 할 역사적 기억이 무엇인지를 절실하게 환기하고 있다. 5.18 당시 중학교 3학년이던 소년 동호는 친구 정대의
+                  죽음을 목격한 것을 계기로 도청 상무관에서 시신들을 관리하는 일을 돕게 된다. 매일같이 합동분향소가 있는 상무관으로 들어오는 시신들을 수습하면서 열다섯 어린 소년은 '어린 새' 한
+                  마리가 빠져나간 것 같은 주검들의 말 없는 혼을 위로하기 위해 초를 밝히고, '시취를 뿜어내는 것으로 또다른 시위를 하는 것 같은' 시신들 사이에서 친구 정대의 처참한 죽음을 떠올리며
+                  괴로워한다. 정대는 동호와 함께 시위대의 행진 도중 계엄군이 쏜 총에 맞아 쓰러져 죽게 되고, 중학교를 마치기 전에 공장에 들어와 자신의 꿈을 미루고 동생을 뒷바라지하던 정대의 누나
+                  정미 역시 그 봄에 행방불명되면서 남매는 비극을 맞는다. 소설은 동호와 함께 상무관에서 일하던 형과 누나들이 겪은 5.18 전후의 삶의 모습을 통해 대한민국 근현대사의 비극적인
+                  단면들을 드러내 보이고 있다.
                 </p>
               </div>
             </div>
@@ -110,12 +144,66 @@
       </div>
     </div>
   </div>
-  
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  <script src="categories.js"></script>
-  <script src="authors.js"></script>
-  <script src="books.js"></script>
-  <script src="script.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="categories.js" type="module"></script>
+  <script src="authors.js" type="module"></script>
+  <script src="books.js" type="module"></script>
+  <script src="script.js" type="module"></script>
+  <!-- index.html (홈 페이지) -->
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', function () {
+      const books = JSON.parse(localStorage.getItem('books')) || [];
+      const newBookAdded = localStorage.getItem('newBookAdded');
+
+      const booksContainer = document.getElementById('book-list-row');
+      booksContainer.innerHTML = '';  // 기존 목록 초기화
+
+      // 새로운 책이 추가되었으면, 해당 책을 첫 번째로 표시
+      if (newBookAdded === 'true' && books.length > 0) {
+        const newBook = books[0];  // 첫 번째 책 가져오기
+        const newBookElement = document.createElement('div');
+        newBookElement.classList.add('col-3');
+        newBookElement.innerHTML = `
+        <div class="card">
+          <img src="${newBook.cover}" class="card-img-top" alt="${newBook.title}">
+          <div class="card-body">
+            <h5 class="card-title">${newBook.title}</h5>
+            <p class="card-text">${newBook.author}</p>
+          </div>
+        </div>
+      `;
+        booksContainer.appendChild(newBookElement);
+
+        // 'newBookAdded' 플래그를 false로 설정
+        localStorage.setItem('newBookAdded', 'false');
+      }
+
+      // 책 목록 출력
+      books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.classList.add('col-3');
+        bookElement.innerHTML = `
+        <div class="card">
+          <img src="${book.cover}" class="card-img-top" alt="${book.title}">
+          <div class="card-body">
+            <h5 class="card-title">${book.title}</h5>
+            <p class="card-text">${book.author}</p>
+          </div>
+        </div>
+      `;
+        booksContainer.appendChild(bookElement);
+      });
+    });
+  </script>
+
+  <!-- 책 목록을 출력할 위치 -->
+  <ul id="books-list"></ul>
+
 </body>
+
 </html>

@@ -1,4 +1,29 @@
-const authorRawData = [
+// 작가 목록을 저장하는 함수
+function getAuthors() {
+  return JSON.parse(localStorage.getItem('authors')) || [];
+}
+
+// 작가 데이터를 추가하는 함수
+function addAuthor(newAuthor) {
+  const authors = getAuthors();
+  authors.push(newAuthor);
+  localStorage.setItem('authors', JSON.stringify(authors));
+}
+
+// 작가 목록을 화면에 표시하는 함수 (select 옵션 추가)
+function populateAuthors() {
+  const authors = getAuthors();
+  const authorSelect = document.querySelector('#author-input');
+  authorSelect.innerHTML = authors.map(author => `
+    <option value="${author.id}">${author.name}</option>
+  `).join('');
+}
+
+// 초기 로딩 시 작가 목록 표시
+populateAuthors();
+
+
+export const authorRawData = [
   {
     id: 1,
     name: '한강',
